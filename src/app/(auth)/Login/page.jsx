@@ -16,7 +16,7 @@ export default function Login() {
     
     // Simulate API call - In production, connect to your auth backend
     setTimeout(() => {
-    
+      // For demo purposes - accept any email/password with basic validation
       if (email && password && password.length >= 6) {
         const user = {
           id: Date.now().toString(),

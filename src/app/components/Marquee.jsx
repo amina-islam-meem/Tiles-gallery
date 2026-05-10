@@ -19,7 +19,7 @@ export default function Marquee() {
   };
 
   const marqueeItems = [
-    ...tiles.map(tile => `🆕 New Arrival: ${tile.title}`),
+    ...tiles.map(tile => `New Arrival: ${tile.title}`),
     " Weekly Feature: Modern Geometric Patterns",
     " Join 10,000+ Happy Customers",
     " Premium Quality Tiles",

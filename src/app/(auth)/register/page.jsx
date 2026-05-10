@@ -54,14 +54,14 @@ export default function Register() {
     localStorage.setItem('tilegallery_user', JSON.stringify(user));
     localStorage.setItem('tilegallery_session', 'google_session_token');
     toast.success('Registration successful!');
-    router.push('/');
+    window.location.href = '/';
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate__animated animate__fadeIn">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-4">✨</div>
+          <div className="text-5xl mb-4"></div>
           <h1 className="text-3xl font-bold text-gray-800">Create Account</h1>
           <p className="text-gray-600 mt-2">Join our tile community today</p>
         </div>
@@ -75,7 +75,7 @@ export default function Register() {
               onChange={(e) => setName(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="John Doe"
+              placeholder=" Enter your name"
             />
           </div>
 
@@ -87,8 +87,7 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="you@example.com"
-            />
+              placeholder="Enter your email"/>
           </div>
 
           <div>
