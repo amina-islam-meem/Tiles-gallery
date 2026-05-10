@@ -31,9 +31,12 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem('tilegallery_user');
     localStorage.removeItem('tilegallery_session');
+    document.cookie = "tilegallery_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
     setUser(null);
     toast.success('Logged out successfully!');
-     window.location.href = '/';
+    window.location.href = '/';
   };
 
   const isActive = (path) => pathname === path;
