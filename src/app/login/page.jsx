@@ -19,29 +19,19 @@ export default function Login() {
           id: Date.now().toString(),
           name: email.split('@')[0],
           email: email,
-          image: `https://ui-avatars.com/api/?name=${
-            email.split('@')[0]
-          }&background=6366f1&color=fff`,
+          image: `https://ui-avatars.com/api/?name=${email.split('@')[0]}&background=6366f1&color=fff`,
         };
 
-        localStorage.setItem(
-          'tilegallery_user',
-          JSON.stringify(user)
-        );
+        localStorage.setItem('tilegallery_user', JSON.stringify(user));
+        localStorage.setItem('tilegallery_session', 'dummy_session_token');
 
-        localStorage.setItem(
-          'tilegallery_session',
-          'dummy_session_token'
-        );
+        document.cookie = "tilegallery_session=dummy_session_token; path=/; max-age=86400";
+        document.cookie = "token=dummy_session_token; path=/; max-age=86400";
 
         toast.success('Login successful!');
-
-        router.push('/');
-        router.refresh();
+        window.location.href = '/';
       } else {
-        toast.error(
-          'Invalid email or password. Password must be at least 6 characters.'
-        );
+        toast.error('Invalid email or password. Password must be at least 6 characters.');
       }
 
       setLoading(false);
@@ -56,41 +46,28 @@ export default function Login() {
       image: 'https://avatars.githubusercontent.com/u/1?v=4',
     };
 
-    localStorage.setItem(
-      'tilegallery_user',
-      JSON.stringify(user)
-    );
+    localStorage.setItem('tilegallery_user', JSON.stringify(user));
+    localStorage.setItem('tilegallery_session', 'google_session_token');
 
-    localStorage.setItem(
-      'tilegallery_session',
-      'google_session_token'
-    );
+    document.cookie = "tilegallery_session=google_session_token; path=/; max-age=86400";
+    document.cookie = "token=google_session_token; path=/; max-age=86400";
 
     toast.success('Google login successful!');
 
-    router.push('/');
-    router.refresh();
+    window.location.href = '/';
   };
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12">
       <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4 animate__animated animate__fadeIn">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Welcome Back
-          </h1>
-
-          <p className="text-gray-600 mt-2">
-            Login to continue your tile journey
-          </p>
+          <h1 className="text-3xl font-bold text-gray-800">Welcome Back</h1>
+          <p className="text-gray-600 mt-2">Login to continue your tile journey</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Email Address
-            </label>
-
+            <label className="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
             <input
               type="email"
               value={email}
@@ -102,10 +79,7 @@ export default function Login() {
           </div>
 
           <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Password
-            </label>
-
+            <label className="block text-gray-700 text-sm font-medium mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -129,11 +103,8 @@ export default function Login() {
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-gray-300"></div>
           </div>
-
           <div className="relative flex justify-center text-sm">
-            <span className="px-2 bg-white text-gray-500">
-              Or continue with
-            </span>
+            <span className="px-2 bg-white text-gray-500">Or continue with</span>
           </div>
         </div>
 
@@ -141,16 +112,12 @@ export default function Login() {
           onClick={handleGoogleLogin}
           className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
         >
-          <span className="text-xl">G</span>
-          Continue with Google
+          <span className="text-xl">G</span> Continue with Google
         </button>
 
         <p className="text-center mt-6 text-gray-600">
           Don't have an account?{' '}
-          <Link
-            href="/register"
-            className="text-blue-600 hover:text-blue-700 font-semibold"
-          >
+          <Link href="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
             Sign up
           </Link>
         </p>
