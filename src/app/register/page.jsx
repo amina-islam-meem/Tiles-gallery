@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client'; 
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -29,28 +30,23 @@ export default function Register() {
     setLoading(true);
     
     
-    setTimeout(() => {
-      const user = {
-        id: Date.now().toString(),
-        name: name,
-        email: email,
-        image: image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff`
-      };
-      localStorage.setItem('tilegallery_user', JSON.stringify(user));
-      localStorage.setItem('tilegallery_session', 'dummy_session_token');
-      toast.success('Registration successful! Please login.');
-      router.push('/login');
-      setLoading(false);
-    }, 1000);
+  const { data, error } = await authClient.signUp.email({
+    name: name,
+    email: email,
+    password: password,
+    image: image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6366f1&color=fff`,
+    callbackURL: "/login", 
+  });
 
+if (error) {
+    toast.error(error.message || 'Registration failed');
+    setLoading(false);
+    return;
+  }
 
-    const { data, error } = await authClient.signUp.email({
-    name: "John Doe", // required
-    email: "john.doe@example.com", // required
-    password: "password1234", // required
-    image: "https://example.com/image.png",
-    callbackURL: "https://example.com/callback",
-});
+  toast.success('Registration successful! Please login.');
+  router.push('/login');
+  setLoading(false);
   };
 
   const handleGoogleRegister = () => {

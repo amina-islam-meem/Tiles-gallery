@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { authClient } from '@/lib/auth-client';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -13,29 +14,22 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setTimeout(() => {
-      if (email && password && password.length >= 6) {
-        const user = {
-          id: Date.now().toString(),
-          name: email.split('@')[0],
-          email: email,
-          image: `https://ui-avatars.com/api/?name=${email.split('@')[0]}&background=6366f1&color=fff`,
-        };
 
-        localStorage.setItem('tilegallery_user', JSON.stringify(user));
-        localStorage.setItem('tilegallery_session', 'dummy_session_token');
+    const { data, error } = await authClient.signIn.email({
+    email: email,
+    password: password,
+    callbackURL: "/",
+    rememberMe: true,
+  });
 
-        document.cookie = "tilegallery_session=dummy_session_token; path=/; max-age=86400";
-        document.cookie = "token=dummy_session_token; path=/; max-age=86400";
+  if (error) {
+    toast.error(error.message || 'Invalid email or password');
+    setLoading(false);
+    return;
+  }
 
-        toast.success('Login successful!');
-        window.location.href = '/';
-      } else {
-        toast.error('Invalid email or password. Password must be at least 6 characters.');
-      }
-
-      setLoading(false);
-    }, 1000);
+  toast.success('Login successful!');
+  window.location.href = '/'; 
   };
 
   const handleGoogleLogin = () => {
