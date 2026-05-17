@@ -7,8 +7,7 @@ const db = client.db("tiles-gallery");
 
 export const auth = betterAuth({
 
-    baseURL: "https://tiles-gallery-silk.vercel.app/",
-    secret: process.env.BETTER_AUTH_SECRET, 
+  secret: process.env.BETTER_AUTH_SECRET, 
   database: mongodbAdapter(db, {
     client
   }),
