@@ -1,42 +1,37 @@
 'use client';
+import { authClient, useSession } from '@/lib/auth-client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export default function Header() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data: session, isPending: loading } = useSession();
+  const user = session?.user;
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
+  
   useEffect(() => {
-    checkUser();
+    setMounted(true);
   }, []);
 
-  const checkUser = () => {
+  const handleLogout = async () => {
     try {
-      const storedUser = localStorage.getItem('tilegallery_user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
-      }
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success('Logged out successfully!');
+            router.push('/');
+          },
+        },
+      });
     } catch (error) {
-      console.error('Error checking user:', error);
-    } finally {
-      setLoading(false);
+      toast.error('Failed to log out');
     }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('tilegallery_user');
-    localStorage.removeItem('tilegallery_session');
-    document.cookie = "tilegallery_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
-    setUser(null);
-    toast.success('Logged out successfully!');
-    window.location.href = '/';
   };
 
   const isActive = (path) => pathname === path;
@@ -58,7 +53,8 @@ export default function Header() {
             <Link href="/all-tiles" className={`${isActive('/all-tiles') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'} font-medium transition-colors pb-1`}>
               All Tiles
             </Link>
-            {user && (
+            
+            {mounted && user && (
               <Link href="/my-profile" className={`${isActive('/my-profile') ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-700 hover:text-blue-600'} font-medium transition-colors pb-1`}>
                 My Profile
               </Link>
@@ -66,8 +62,9 @@ export default function Header() {
           </div>
 
           {/* Desktop Right Section */}
-          <div className="hidden md:block">
-            {!loading && (
+          <div className="hidden md:block min-w-[120px]">
+            
+            {mounted && !loading && (
               user ? (
                 <div className="flex items-center gap-4">
                   <img 
@@ -108,13 +105,15 @@ export default function Header() {
             <div className="flex flex-col gap-4">
               <Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-blue-600">Home</Link>
               <Link href="/all-tiles" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-blue-600">All Tiles</Link>
-              {user && (
+              {mounted && user && (
                 <Link href="/my-profile" onClick={() => setMobileMenuOpen(false)} className="text-gray-700 hover:text-blue-600">My Profile</Link>
               )}
-              {user ? (
-                <button onClick={handleLogout} className="text-left text-red-500">Logout</button>
-              ) : (
-                <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="text-blue-600">Login</Link>
+              {mounted && !loading && (
+                user ? (
+                  <button onClick={handleLogout} className="text-left text-red-500">Logout</button>
+                ) : (
+                  <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="text-blue-600">Login</Link>
+                )
               )}
             </div>
           </div>

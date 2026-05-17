@@ -1,6 +1,6 @@
 import { createAuthClient } from "better-auth/react"
 export const authClient = createAuthClient({
-     baseURL:"https://tiles-gallery-silk.vercel.app"
-})
+  baseURL: process.env.N_BETTER_AUTH_URL,
+});
 
-export const { signIn, signUp, useSession } = authClient()
+export const { signIn, signUp, useSession } = authClient;

@@ -29,27 +29,16 @@ export default function Login() {
   }
 
   toast.success('Login successful!');
-  window.location.href = '/'; 
+  router.push('/');
+  router.refresh(); 
   };
 
-  const handleGoogleLogin = () => {
-    const user = {
-      id: Date.now().toString(),
-      name: 'Google User',
-      email: 'user@gmail.com',
-      image: 'https://avatars.githubusercontent.com/u/1?v=4',
-    };
-
-    localStorage.setItem('tilegallery_user', JSON.stringify(user));
-    localStorage.setItem('tilegallery_session', 'google_session_token');
-
-    document.cookie = "tilegallery_session=google_session_token; path=/; max-age=86400";
-    document.cookie = "token=google_session_token; path=/; max-age=86400";
-
-    toast.success('Google login successful!');
-
-    window.location.href = '/';
-  };
+  const handleGoogleLogin = async () => {
+  await authClient.signIn.social({
+    provider: "google",
+    callbackURL: "/",
+  });
+};
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12">

@@ -1,30 +1,32 @@
 import { NextResponse } from 'next/server';
 
 export async function middleware(request) {
-  // Check for session in cookies
-  const session = request.cookies.get('tilegallery_session') || 
-                   request.cookies.get('better-auth.session');
-  
   const { pathname } = request.nextUrl;
   
-  // Define public and private routes
-  const publicPaths = ['/', '/all-tiles', '/login', '/register'];
-  const isPublicPath = publicPaths.includes(pathname);
-  const isTilePath = pathname.startsWith('/tile/');
-  
-  // Protected routes require authentication
-  if ((isTilePath || pathname === '/my-profile') && !session) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  // Better Auth v0.7 uses these cookies
+  const hasSession = 
+    request.cookies.has('better-auth.session_token') ||
+    request.cookies.has('__Secure-better-auth.session_token') ||
+    request.cookies.has('better-auth.session_data');
+
+  // Public routes
+  const isPublic = ['/', '/all-tiles', '/login', '/register'].includes(pathname) || 
+                   pathname.startsWith('/tile/') ||
+                   pathname.startsWith('/api/');
+
+  // Protect /my-profile
+  if (pathname === '/my-profile' && !hasSession) {
+    return NextResponse.redirect(new URL('/login?redirect=/my-profile', request.url));
   }
-  
-  // Already logged in users can't access login/register
-  if ((pathname === '/login' || pathname === '/register') && session) {
+
+  // Redirect logged-in users from auth pages
+  if ((pathname === '/login' || pathname === '/register') && hasSession) {
     return NextResponse.redirect(new URL('/', request.url));
   }
-  
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 };
