@@ -2,9 +2,16 @@ import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
-const client = new MongoClient(process.env.MONGODB_URI);
-const db = client.db("tiles-gallery");
+let client;
+let db;
 
+function getDb() {
+  if (!client) {
+    client = new MongoClient(process.env.MONGODB_URI);
+    db = client.db("tiles-gallery");
+  }
+  return db;
+}
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
