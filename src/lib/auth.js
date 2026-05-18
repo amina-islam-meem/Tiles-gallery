@@ -2,20 +2,18 @@ import { betterAuth } from "better-auth";
 import { MongoClient } from "mongodb";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 
-let client;
-let db;
 
-function getDb() {
-  if (!client) {
-    client = new MongoClient(process.env.MONGODB_URI);
-    db = client.db("tiles-gallery");
-  }
-  return db;
+if (!process.env.MONGODB_URI) {
+  throw new Error("MONGODB_URI is missing in environment variables");
 }
+
+const client = new MongoClient(process.env.MONGODB_URI);
+const db = client.db("tiles-gallery"); 
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   secret: process.env.BETTER_AUTH_SECRET,
-  database: mongodbAdapter(db),
+  database: mongodbAdapter(db), 
   emailAndPassword: { 
     enabled: true,
     autoSignIn: true,
@@ -28,8 +26,8 @@ export const auth = betterAuth({
   },
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
   },
   trustedOrigins: ["http://localhost:3000", "https://tiles-gallery-silk.vercel.app"],
