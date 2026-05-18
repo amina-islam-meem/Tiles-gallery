@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import toast from 'react-hot-toast';
+import * as Avatar from "@radix-ui/react-avatar";
 
 export default function Header() {
   const { data: session, isPending: loading } = useSession();
@@ -67,12 +68,13 @@ export default function Header() {
             {mounted && !loading && (
               user ? (
                 <div className="flex items-center gap-4">
-                  <img 
-                    src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=6366f1&color=fff&bold=true`} 
-                    alt="Profile" 
-                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
-                  />
-                  <span className="text-gray-700 hidden lg:inline">{user.name}</span>
+                  <Avatar>
+                    <Avatar.Image
+                       src={user?.image} 
+                       refferencePolicy="no-referrer"
+                       className="w-10 h-10 rounded-full object-cover border-2 border-blue-500"/>
+                    <Avatar.Fallback>{user?.name[0]}</Avatar.Fallback>
+                  </Avatar>
                   <button 
                     onClick={handleLogout}
                     className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all hover:scale-105"

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.6.11",
+    "@radix-ui/react-avatar": "^1.1.11",
     "animate.css": "^4.1.1",
     "axios": "^1.6.7",
     "bcryptjs": "^2.4.3",
